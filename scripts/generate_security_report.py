@@ -5,13 +5,6 @@ import re
 from collections import Counter
 from pathlib import Path
 
-import subprocess
-
-# Fausse valeur ajoutee pour declencher Bandit.
-password_in_clear = "monSuperPassword"
-
-# Faux appel dangereux ajoute pour declencher Bandit.
-subprocess.Popen("echo bandit-test", shell=True)
 
 def load_sarif(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
