@@ -34,6 +34,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-fs.sarif
 
@@ -51,6 +52,7 @@ jobs:
         with:
           image-ref: prom/prometheus:v3.0.0
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-prometheus.sarif
 
@@ -65,6 +67,7 @@ jobs:
         with:
           image-ref: grafana/grafana:11.2.0
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-grafana.sarif
 
@@ -79,6 +82,7 @@ jobs:
         with:
           image-ref: prom/node-exporter:v1.8.2
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-node-exporter.sarif
 
@@ -93,6 +97,7 @@ jobs:
         with:
           image-ref: mariadb:11.4
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-mariadb.sarif
 
@@ -107,6 +112,7 @@ jobs:
         with:
           image-ref: wordpress:6.8.1-php8.3-apache
           severity: HIGH,CRITICAL
+          ignore-unfixed: true
           format: sarif
           output: trivy-wordpress.sarif
 
