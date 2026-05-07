@@ -1,6 +1,7 @@
 import argparse
 import glob
 import json
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -51,6 +52,27 @@ def normalize_severity(level: str) -> str:
     return normalized
 
 
+def extract_severity(result: dict, rule: dict) -> str:
+    message = result.get("message", {}).get("text", "")
+    severity_match = re.search(r"Severity:\s*(UNKNOWN|LOW|MEDIUM|HIGH|CRITICAL)", message, re.IGNORECASE)
+    if severity_match:
+        return severity_match.group(1).upper()
+
+    properties = result.get("properties", {})
+    for key in ("severity", "Severity"):
+        value = properties.get(key)
+        if isinstance(value, str) and value:
+            return value.upper()
+
+    rule_properties = rule.get("properties", {})
+    for key in ("security-severity", "severity", "Severity"):
+        value = rule_properties.get(key)
+        if isinstance(value, str) and value:
+            return value.upper()
+
+    return normalize_severity(result.get("level", "unknown"))
+
+
 def extract_findings(sarif_path: Path) -> list[dict]:
     data = load_sarif(sarif_path)
     findings = []
@@ -62,7 +84,7 @@ def extract_findings(sarif_path: Path) -> list[dict]:
         for result in run.get("results", []):
             rule_id = result.get("ruleId", "Unknown")
             rule = rule_index.get(rule_id, {})
-            level = normalize_severity(result.get("level", "unknown"))
+            level = extract_severity(result, rule)
             message = result.get("message", {}).get("text", "No description provided.")
             cwe = extract_cwe(rule)
             help_uri = rule.get("helpUri", "N/A")

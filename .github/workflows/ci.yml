@@ -17,32 +17,32 @@ jobs:
         GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
         GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
     steps:
-      - name: Checkout repository
+      - name: Recuperation du depot
         uses: actions/checkout@v4
 
-      - name: Validate Docker compose 
+      - name: Validation du Docker Compose
         run: docker compose config
 
-      - name: Start docker-compose
+      - name: Demarrage de la stack Docker Compose
         run: docker compose up -d 
 
-      - name: Wait for services
+      - name: Attente du demarrage des services
         run: sleep 20
       
-      - name: Test Prometheus
+      - name: Test de Prometheus
         run: curl -f http://localhost:9090/-/healthy
 
-      - name: Test Grafana
+      - name: Test de Grafana
         run: curl -f http://localhost:3000/api/health
 
-      - name: Show logs on failure
+      - name: Affichage des logs en cas d'echec
         if: failure()
         run: docker compose logs
 
-      - name: List running containers
+      - name: Liste des conteneurs en cours d'execution
         run: docker ps -a
 
-      - name: Stop docker-compose stack
+      - name: Arret de la stack Docker Compose
         if: always()
         run: docker compose down
       
