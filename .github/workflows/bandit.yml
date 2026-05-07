@@ -23,7 +23,7 @@ jobs:
         run: pip install bandit
 
       - name: Scan des scripts avec Bandit
-        run: bandit -r scripts -f txt -o bandit-report.txt -lll -iii
+        run: bandit -r scripts -f txt -o bandit-report.txt
 
       - name: Envoi du rapport Bandit en artifact
         if: always()
