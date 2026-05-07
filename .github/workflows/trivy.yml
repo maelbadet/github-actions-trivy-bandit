@@ -29,7 +29,7 @@ jobs:
         run: docker compose config
 
       - name: Scan Trivy des fichiers du depot
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           scan-type: fs
           scan-ref: .
@@ -46,7 +46,7 @@ jobs:
         run: docker compose pull
 
       - name: Scan Trivy de l'image prom/prometheus:v3.0.0
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: prom/prometheus:v3.0.0
           severity: HIGH,CRITICAL
@@ -59,7 +59,7 @@ jobs:
           sarif_file: trivy-prometheus.sarif
 
       - name: Scan Trivy de l'image grafana/grafana:11.2.0
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: grafana/grafana:11.2.0
           severity: HIGH,CRITICAL
@@ -72,7 +72,7 @@ jobs:
           sarif_file: trivy-grafana.sarif
 
       - name: Scan Trivy de l'image prom/node-exporter:v1.8.2
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: prom/node-exporter:v1.8.2
           severity: HIGH,CRITICAL
@@ -85,7 +85,7 @@ jobs:
           sarif_file: trivy-node-exporter.sarif
 
       - name: Scan Trivy de l'image mariadb:11.4
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: mariadb:11.4
           severity: HIGH,CRITICAL
@@ -98,7 +98,7 @@ jobs:
           sarif_file: trivy-mariadb.sarif
 
       - name: Scan Trivy de l'image wordpress:6.8.1-php8.3-apache
-        uses: aquasecurity/trivy-action@0.24.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: wordpress:6.8.1-php8.3-apache
           severity: HIGH,CRITICAL
