@@ -88,6 +88,7 @@ def extract_findings(sarif_path: Path) -> list[dict]:
 def render_markdown(findings: list[dict]) -> str:
     severity_counts = Counter(finding["level"] for finding in findings)
     source_counts = Counter(finding["source"] for finding in findings)
+    critical_findings = [finding for finding in findings if finding["level"] == "CRITICAL"]
 
     lines = [
         "# Security and Quality Findings",
@@ -96,6 +97,7 @@ def render_markdown(findings: list[dict]) -> str:
         f"- Total findings: {len(findings)}",
         f"- CRITICAL: {severity_counts.get('CRITICAL', 0)}",
         f"- HIGH: {severity_counts.get('HIGH', 0)}",
+        f"- Findings detailed below: {len(critical_findings)} critical findings only",
         "",
         "## Findings by Report",
     ]
@@ -113,9 +115,19 @@ def render_markdown(findings: list[dict]) -> str:
         )
         return "\n".join(lines) + "\n"
 
-    lines.extend(["", "## Findings"])
+    if not critical_findings:
+        lines.extend(
+            [
+                "",
+                "## Findings",
+                "No CRITICAL findings were detected. HIGH findings exist in the SARIF reports and GitHub Security results.",
+            ]
+        )
+        return "\n".join(lines) + "\n"
 
-    for index, finding in enumerate(findings, start=1):
+    lines.extend(["", "## Critical Findings"])
+
+    for index, finding in enumerate(critical_findings, start=1):
         lines.extend(
             [
                 f"### {index}. {finding['title']}",
