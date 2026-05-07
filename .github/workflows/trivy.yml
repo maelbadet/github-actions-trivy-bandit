@@ -47,10 +47,10 @@ jobs:
       - name: Pull Docker images
         run: docker compose pull
 
-      - name: Scan Trivy de l'image prom/prometheus:v3.0.0
+      - name: Scan Trivy de l'image prom/prometheus:v3.11.2
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: prom/prometheus:v3.0.0
+          image-ref: prom/prometheus:v3.11.2
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
@@ -62,10 +62,10 @@ jobs:
           sarif_file: trivy-prometheus.sarif
           category: trivy-prometheus
 
-      - name: Scan Trivy de l'image grafana/grafana:11.2.0
+      - name: Scan Trivy de l'image grafana/grafana:13.0.1
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: grafana/grafana:11.2.0
+          image-ref: grafana/grafana:13.0.1
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
@@ -77,10 +77,10 @@ jobs:
           sarif_file: trivy-grafana.sarif
           category: trivy-grafana
 
-      - name: Scan Trivy de l'image prom/node-exporter:v1.8.2
+      - name: Scan Trivy de l'image prom/node-exporter:v1.11.1
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: prom/node-exporter:v1.8.2
+          image-ref: prom/node-exporter:v1.11.1
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
@@ -92,10 +92,10 @@ jobs:
           sarif_file: trivy-node-exporter.sarif
           category: trivy-node-exporter
 
-      - name: Scan Trivy de l'image mariadb:11.4
+      - name: Scan Trivy de l'image mariadb:11.4.10
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: mariadb:11.4
+          image-ref: mariadb:11.4.10
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
@@ -107,10 +107,10 @@ jobs:
           sarif_file: trivy-mariadb.sarif
           category: trivy-mariadb
 
-      - name: Scan Trivy de l'image wordpress:6.8.1-php8.3-apache
+      - name: Scan Trivy de l'image wordpress:6.9.4-php8.3-apache
         uses: aquasecurity/trivy-action@v0.35.0
         with:
-          image-ref: wordpress:6.8.1-php8.3-apache
+          image-ref: wordpress:6.9.4-php8.3-apache
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           format: sarif
