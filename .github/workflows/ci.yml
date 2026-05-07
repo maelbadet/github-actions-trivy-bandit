@@ -1,4 +1,4 @@
-name: CI
+name: Deploiement du docker-compose contenant (prometheus, node-exporter, grafana, mariadb et wordpress)
 
 on:
   push:
@@ -25,6 +25,19 @@ jobs:
 
       - name: Start docker-compose
         run: docker compose up -d 
+
+      - name: Wait for services
+        run: sleep 20
+      
+      - name: Test Prometheus
+        run: curl -f http://localhost:9090/-/healthy
+
+      - name: Test Grafana
+        run: curl -f http://localhost:3000/api/health
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose logs
 
       - name: List running containers
         run: docker ps -a
