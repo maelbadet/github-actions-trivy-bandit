@@ -42,6 +42,15 @@ def extract_target(result: dict, source_name: str) -> str:
     return source_name
 
 
+def normalize_severity(level: str) -> str:
+    normalized = str(level).upper()
+    if normalized == "ERROR":
+        return "CRITICAL"
+    if normalized == "WARNING":
+        return "HIGH"
+    return normalized
+
+
 def extract_findings(sarif_path: Path) -> list[dict]:
     data = load_sarif(sarif_path)
     findings = []
@@ -53,7 +62,7 @@ def extract_findings(sarif_path: Path) -> list[dict]:
         for result in run.get("results", []):
             rule_id = result.get("ruleId", "Unknown")
             rule = rule_index.get(rule_id, {})
-            level = str(result.get("level", "unknown")).upper()
+            level = normalize_severity(result.get("level", "unknown"))
             message = result.get("message", {}).get("text", "No description provided.")
             cwe = extract_cwe(rule)
             help_uri = rule.get("helpUri", "N/A")
@@ -85,8 +94,8 @@ def render_markdown(findings: list[dict]) -> str:
         "",
         "## Summary",
         f"- Total findings: {len(findings)}",
-        f"- CRITICAL: {severity_counts.get('ERROR', 0)}",
-        f"- HIGH: {severity_counts.get('WARNING', 0)}",
+        f"- CRITICAL: {severity_counts.get('CRITICAL', 0)}",
+        f"- HIGH: {severity_counts.get('HIGH', 0)}",
         "",
         "## Findings by Report",
     ]
