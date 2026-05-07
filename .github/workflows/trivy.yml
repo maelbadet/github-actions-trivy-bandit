@@ -1,0 +1,111 @@
+name: Scan Trivy des fichiers du repo et des images Docker
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MARIADB_DATABASE: ${{ vars.MARIADB_DATABASE }}
+      MARIADB_USER: ${{ vars.MARIADB_USER }}
+      WORDPRESS_DB_PASSWORD: ${{ secrets.WORDPRESS_DB_PASSWORD }}
+      MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+      GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
+      GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker compose
+        run: docker compose config
+
+      - name: Scan Trivy des fichiers du depot
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-fs.sarif
+
+      - name: Upload SARIF du scan filesystem
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-fs.sarif
+
+      - name: Pull Docker images
+        run: docker compose pull
+
+      - name: Scan Trivy de l'image prom/prometheus:v3.0.0
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: prom/prometheus:v3.0.0
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-prometheus.sarif
+
+      - name: Upload SARIF de l'image Prometheus
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-prometheus.sarif
+
+      - name: Scan Trivy de l'image grafana/grafana:11.2.0
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: grafana/grafana:11.2.0
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-grafana.sarif
+
+      - name: Upload SARIF de l'image Grafana
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-grafana.sarif
+
+      - name: Scan Trivy de l'image prom/node-exporter:v1.8.2
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: prom/node-exporter:v1.8.2
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-node-exporter.sarif
+
+      - name: Upload SARIF de l'image node-exporter
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-node-exporter.sarif
+
+      - name: Scan Trivy de l'image mariadb:11.4
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: mariadb:11.4
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-mariadb.sarif
+
+      - name: Upload SARIF de l'image MariaDB
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-mariadb.sarif
+
+      - name: Scan Trivy de l'image wordpress:6.8.1-php8.3-apache
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: wordpress:6.8.1-php8.3-apache
+          severity: HIGH,CRITICAL
+          format: sarif
+          output: trivy-wordpress.sarif
+
+      - name: Upload SARIF de l'image WordPress
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: trivy-wordpress.sarif
