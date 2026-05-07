@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+        MARIADB_DATABASE: ${{ vars.MARIADB_DATABASE }}
+        MARIADB_USER: ${{ vars.MARIADB_USER }}
+        WORDPRESS_DB_PASSWORD: ${{ secrets.WORDPRESS_DB_PASSWORD }}
+        MARIADB_ROOT_PASSWORD: ${{ secrets.MARIADB_ROOT_PASSWORD }}
+        GF_SECURITY_ADMIN_USER: ${{ secrets.GF_SECURITY_ADMIN_USER }}
+        GF_SECURITY_ADMIN_PASSWORD: ${{ secrets.GF_SECURITY_ADMIN_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate Docker compose 
+        run: docker compose config
+
+      - name: Start docker-compose
+        run: docker compose up -d 
+
+      - name: List running containers
+        run: docker ps -a
+
+      - name: Stop docker-compose stack
+        if: always()
+        run: docker compose down
+      
